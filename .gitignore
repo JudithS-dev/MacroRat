@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# exclude modules not part of my project scope
+code/src/communication_interface.cpp
+code/src/communication_interface.h
+code/src/nfc_reader.cpp
+code/src/nfc_reader.h
+
