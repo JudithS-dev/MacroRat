@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+echo "Checking if diagrams are up to date..."
+
+# Check if new diagrams need to be generated
+if ! make -C docs --question; then
+    echo "Diagram PNGs are out of date."
+    echo "Please run './generate_diagrams_md.sh' and add the updated PNGs before committing."
+    exit 1
+fi
+
+echo "All diagrams are up to date."
+exit 0

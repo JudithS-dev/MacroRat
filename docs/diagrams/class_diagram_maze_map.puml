@@ -1,0 +1,145 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+enum CellState{
+  NON_VISITED
+  UNREACHABLE
+  EMPTY
+  TRAP
+  CHEESE
+}
+
+enum WallState{
+  UNKNOWN
+  NO_WALL
+  WALL
+  OUTER_WALL
+}
+
+enum Direction{
+  NORTH
+  EAST
+  SOUTH
+  WEST
+}
+
+class Maze{
+  .. Constants ..
+  + {static} MAZE_WIDTH: int16_t = 3
+  + {static} MAZE_HEIGHT: int16_t = 5
+  + {static} MAZE_MAX_X: int16_t = MAZE_WIDTH / 2
+  + {static} MAZE_MAX_Y: int16_t = MAZE_HEIGHT / 2
+  .. Maze structure ..
+  - cell_states_: CellState[MAZE_HEIGHT][MAZE_WIDTH]
+  - vertical_walls_: WallState[MAZE_HEIGHT][MAZE_WIDTH + 1]
+  - horizontal_walls_: WallState[MAZE_HEIGHT + 1][MAZE_WIDTH]
+  - version_counter_: uint8_t
+  .. Explored area bounds ..
+  - min_explored_x_: int16_t
+  - max_explored_x_: int16_t
+  - min_explored_y_: int16_t
+  - max_explored_y_: int16_t
+  .. Reachable area bounds ..
+  - min_reachable_x_: int16_t
+  - max_reachable_x_: int16_t
+  - min_reachable_y_: int16_t
+  - max_reachable_y_: int16_t
+  --
+  + Maze()
+  .. Cell state access ..
+  + setCellState(x: int16_t, y: int16_t, state: CellState): void
+  + getCellState(x: int16_t, y: int16_t): CellState
+
+  + setUnreachableCells(): void
+  + hasUnvisitedCells(): bool
+  + doesCheeseExist(): bool
+  .. Wall state access ..
+  + setHorizontalWallNorth(x: int16_t, y: int16_t, state: WallState): void
+  + setHorizontalWallSouth(x: int16_t, y: int16_t, state: WallState): void
+  + setVerticalWallEast(x: int16_t, y: int16_t, state: WallState): void
+  + setVerticalWallWest(x: int16_t, y: int16_t, state: WallState): void
+
+  + getHorizontalWallNorth(x: int16_t, y: int16_t): WallState
+  + getHorizontalWallSouth(x: int16_t, y: int16_t): WallState
+  + getVerticalWallEast(x: int16_t, y: int16_t): WallState
+  + getVerticalWallWest(x: int16_t, y: int16_t): WallState
+
+  + isWallNorth(x: int16_t, y: int16_t): bool
+  + isWallEast(x: int16_t, y: int16_t): bool
+  + isWallSouth(x: int16_t, y: int16_t): bool
+  + isWallWest(x: int16_t, y: int16_t): bool
+  .. Version tracking ..
+  + getVersion(): uint8_t
+  + hasChangedSince(oldVersion: uint8_t): bool
+  .. Bounds tracking ..
+  + checkMazeBounds(x: int16_t, y: int16_t): void
+
+  +getMinExploredX(): int16_t
+  +getMaxExploredX(): int16_t
+  +getMinExploredY(): int16_t
+  +getMaxExploredY(): int16_t
+
+  + getMinReachableX(): int16_t
+  + getMaxReachableX(): int16_t
+  + getMinReachableY(): int16_t
+  + getMaxReachableY(): int16_t
+  .. Internal helpers ..
+  - incrementVersion(): void
+  - logical2ArrayX(x: int16_t): int16_t
+  - logical2ArrayY(y: int16_t): int16_t
+  - isCellInMaze(x: int16_t, y: int16_t): bool
+  - updateExploredBounds(x: int16_t, y: int16_t): void
+}
+
+class RatPosition{
+  .. Attributes ..
+  - x_: int16_t
+  - y_: int16_t
+  - direction_: Direction
+  - maze_: Maze&
+  --
+  + RatPosition(maze: const Maze&)
+  .. Getters ..
+  + getX(): int16_t
+  + getY(): int16_t
+  + getOrientation(): Direction
+  .. Movement ..
+  + turnLeft(): void
+  + turnRight(): void
+  + turnAround(): void
+  .. Internal helpers ..
+  - checkBounds(x: int16_t, y: int16_t): void
+}
+
+class MazeMap{
+  .. Attributes ..
+  + maze: Maze
+  + rat_pos: RatPosition
+  --
+  + MazeMap()
+  .. Cell state access ..
+  + setLeftWallState(state: WallState): void
+  + setFrontWallState(state: WallState): void
+  + setRightWallState(state: WallState): void
+  .. Wall state access ..
+  + isWallLeft(): bool
+  + isWallFront(): bool
+  + isWallRight(): bool
+  + isWallBack(): bool
+  .. Output ..
+  + printMaze(): void
+}
+
+' Relationships
+MazeMap *-- Maze: contains
+MazeMap *-- RatPosition: contains
+Maze ..> CellState : uses
+Maze ..> WallState : uses
+RatPosition --> Maze : accesses for checkBounds
+RatPosition ..> Direction: uses
+@enduml

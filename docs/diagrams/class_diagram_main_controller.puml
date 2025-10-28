@@ -1,0 +1,39 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+class MazeMap
+class MovementController
+class NavigationEngine
+
+enum RatState{
+  INIT
+  EXPLORE
+  GO_TO_CHEESE
+  RETURN_TO_START
+  FINISHED
+  ERROR
+}
+
+class MainController{
+  .. Attributes ..
+  - currentState_: RatState
+  - map_: MazeMap
+  - movementController_: MovementController
+  - navigationEngine_: NavigationEngine
+  --
+  + MainController()
+  + MainControllerLoop(): void
+}
+
+' ==== Relationships ====
+MainController ..> RatState : uses
+MainController *-- MazeMap : owns
+MainController *-- MovementController : owns
+MainController *-- NavigationEngine : owns
+
+@enduml

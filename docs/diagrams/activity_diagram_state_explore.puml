@@ -1,0 +1,24 @@
+@startuml
+scale 0.7
+
+start
+
+:Sensoren lesen;
+:Karte aktualisieren;
+
+if (Karte vollständig?) then (ja)
+  if (Käse in Labyrinth vorhanden?) then (ja)
+    :Setze Ziel auf Käseposition;
+    :Wechsle zu STATE_GO_TO_CHEESE;
+    stop
+  else (nein)
+    :Setze Ziel auf Startposition;
+    :Wechsle zu STATE_RETURN_TO_START;
+    stop
+  endif
+else (nein)
+  :Bestimme nächste Bewegung (fallenarm);
+  :Führe Bewegung aus;
+  stop
+endif
+@enduml

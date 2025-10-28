@@ -1,0 +1,65 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+class MazeMap
+
+enum Algorithm{
+  FOLLOW_LEFT_WALL
+  FLOOD_FILL
+}
+
+enum MovementAction{
+  MOVE_FORWARD
+  TURN_LEFT_90
+  TURN_LEFT_180
+  TURN_LEFT_270
+  TURN_LEFT_360
+  TURN_RIGHT_90
+  TURN_RIGHT_180
+  TURN_RIGHT_270
+  TURN_RIGHT_360
+  NO_ACTION
+}
+
+class NavigationEngine{
+  .. Constants ..
+  - {static} NORMAL_COST: uint8_t = 1
+  - {static} TRAP_COST: uint8_t  = 20
+  .. Map and Target ..
+  - map_: MazeMap&
+  - target_cell_x_: int16_t
+  - target_cell_y_: int16_t
+  .. Algorithm ..
+  - used_algorithm_: Algorithm
+  - recalculate_route_: bool
+  - maze_route_: uint16_t[MAZE_HEIGHT][MAZE_WIDTH]
+  --
+  + NavigationEngine(map: MazeMap&, used_algorithm: Algorithm)
+  .. Movement handling ..
+  + getNextMovementForExploration(): MovementAction
+  + getNextMovementToTarget(next_action: MovementAction&): bool
+  .. Target handling ..
+  + setTarget(target_cell_x: uint16_t, target_cell_y: uint16_t): void
+  + isTargetReachable(): bool
+  + isTargetReached(): bool
+  .. Exploration handling ..
+  + isMapComplete(): bool
+  .. Internal helpers ..
+  - handleMapChanges(): void
+  .. Algorithm implementations ..
+  - getNextMovementFollowLeftWall(): MovementAction
+  - getNextMovementFollowRightWall(): MovementAction
+  - calculateFloodFill(): void
+}
+
+' Relationships
+NavigationEngine --> MazeMap : accesses
+NavigationEngine ..> Algorithm : uses
+NavigationEngine ..> MovementAction : uses
+
+@enduml

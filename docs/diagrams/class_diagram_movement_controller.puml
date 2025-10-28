@@ -1,0 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+class MazeMap
+class SensorManager
+class MotorDriver
+
+enum Degree{
+  DEG_90
+  DEG_180
+  DEG_270
+  DEG_360
+}
+
+enum MovementAction{
+  MOVE_FORWARD
+  TURN_LEFT_90
+  TURN_LEFT_180
+  TURN_LEFT_270
+  TURN_LEFT_360
+  TURN_RIGHT_90
+  TURN_RIGHT_180
+  TURN_RIGHT_270
+  TURN_RIGHT_360
+  NO_ACTION
+}
+
+class MovementController{
+  .. Attributes ..
+  - maze_map_: MazeMap&
+  - sensor_manager_: SensorManager
+  - motor_driver_: MotorDriver
+  --
+  + MovementController(map: MazeMap&)
+  .. Movement and Mapping ..
+  + mapStartCell(): void
+  + map3WallsCurrentCell(): void
+  + executeAction(action: MovementAction): void
+  .. Special behavior ..
+  + performTrapDelay(): void
+  .. Simulation ..
+  + printSimulatedMaze(): void
+  .. Internal helpers ..
+  - moveCellForward(): void
+  - turnLeft(deg: Degree): void
+  - turnRight(deg: Degree): void
+}
+
+' Relationships
+MovementController --> MazeMap : updates
+MovementController *-- SensorManager : contains
+MovementController *-- MotorDriver : contains
+MovementController ..> MovementAction : uses
+MovementController ..> Degree : uses
+
+@enduml

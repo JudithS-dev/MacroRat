@@ -1,0 +1,28 @@
+@startuml
+
+package "MacroRat Software" {
+    [MainController] --> [MovementController] : triggert Bewegung & Mapping
+    [MainController] --> [NavigationEngine] : fragt nächste Bewegung ab
+
+    [MovementController] --> [MotorDriver] : steuert PWM/Richtung
+    [MovementController] --> [SensorManager] : nutzt Sensordaten (Encoder, Gyro, Abstand, NFC)
+    [MovementController] --> [MazeMap] : aktualisiert Karte
+
+    [SensorManager] --> [Hardware: Sensoren] : liest Rohdaten
+    [SensorManager] --> [SimulatedMaze] : liest Simulationsdaten
+    [SimulatedMaze] --> [RatPosition] : liest Roboter Positionsdaten
+    [MotorDriver] --> [Hardware: Motoren] : steuert Motoren
+
+    [NavigationEngine] --> [MazeMap] : liest Kartendaten
+
+    [CommunicationInterface] --> [Webserver] : überträgt Karten-/Statusdaten
+    [CommunicationInterface] --> [MazeMap] : liest Kartendaten
+
+    [MazeMap] --> [Maze]: speichert Labyrinthdaten
+    [MazeMap] --> [RatPosition]: speichert Roboter Positionsdaten
+
+    [Maze] --> [CommunicationInterface] : Triggert Labyrinthupdate für den Webservers
+    [RatPosition] --> [CommunicationInterface] : Triggert Positionsupdate für den Webservers
+}
+        
+@enduml

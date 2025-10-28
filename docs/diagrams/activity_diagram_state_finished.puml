@@ -1,0 +1,10 @@
+@startuml
+scale 0.7
+
+start
+
+:Stoppe Motoren;
+:Gib Abschlussmeldung aus;
+:Warte auf manuellen Reset;
+
+@enduml

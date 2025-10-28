@@ -1,0 +1,25 @@
+@startuml
+scale 0.7
+
+' left to right direction
+
+[*] --> INIT
+
+INIT --> EXPLORE : after mapping \nof starting cell
+
+EXPLORE --> RETURN_TO_START_1 : if(cheese_exists \n|| map_complete)
+RETURN_TO_START_1 --> GO_TO_CHEESE : if(at_start \n&& cheese_exists)
+RETURN_TO_START_1 --> FINISHED : if(at_start \n&& !cheese_exists)
+GO_TO_CHEESE --> RETURN_TO_START_2 : if(at_cheese)
+RETURN_TO_START_2 --> FINISHED : if(at_start)
+FINISHED --> [*]
+
+' Fehlerzustand (von überall erreichbar)
+INIT --> ERROR : on error
+EXPLORE --> ERROR : on error
+RETURN_TO_START_1 --> ERROR : on error
+GO_TO_CHEESE --> ERROR : on error
+RETURN_TO_START_2 --> ERROR : on error
+ERROR --> [*]
+
+@enduml

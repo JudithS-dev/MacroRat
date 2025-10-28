@@ -1,0 +1,30 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+class MotorDriver {
+  .. Constants ..
+  - {static} PWM_CHANNEL_LEFT: uint8_t = 0
+  - {static} PWM_CHANNEL_RIGHT: uint8_t = 1
+  - {static} DIR_PIN_LEFT: uint8_t = 12
+  - {static} DIR_PIN_RIGHT: uint8_t = 13
+  .. Attributes ..
+  - left_motor_speed_: uint8_t
+  - right_motor_speed: uint8_t
+  --
+  + MotorDriver()
+
+  + getLeftMotorSpeed(): uint8_t
+  + getRightMotorSpeed(): uint8_t
+
+  + setLeftMotorSpeed(speed: int8_t): void
+  + setRightMotorSpeed(speed: int8_t): void
+
+  + stopMotors():void
+}
+
+@enduml

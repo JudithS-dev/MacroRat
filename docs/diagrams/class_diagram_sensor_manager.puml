@@ -1,0 +1,121 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontColor Black
+skinparam classAttributeFontColor Black
+skinparam classMethodFontColor Black
+
+left to right direction
+
+class RatPosition
+
+enum SensorWallState{
+  NO_WALL
+  FOUND_WALL
+  CONFLICT
+}
+
+enum NfcTagType{
+  NO_TAG
+  CHEESE
+  TRAP
+  UNKNOWN
+}
+
+enum SimMazeConfig{
+  EMPTY
+  BASIC_1
+  BASIC_2
+  COMPLEX_1
+  COMPLEX_2
+}
+
+enum CellState{
+  NON_VISITED
+  UNREACHABLE
+  EMPTY
+  TRAP
+  CHEESE
+}
+
+enum WallState{
+  UNKNOWN
+  NO_WALL
+  WALL
+  OUTER_WALL
+}
+
+class SensorManager{
+  .. Constants ..
+  - {static} NR_OF_DISTANCE_MEASUREMENTS: uint8_t = 5
+  - {static} WALL_THRESHOLD: uint8_t  = 50
+  .. Attributes ..
+  - simulated_maze_: SimulatedMaze
+  --
+  + SensorManager(rat_pos: RatPosition&)
+  .. Distance sensors (VL6180) ..
+  + getDistanceLeft(distance: uint8_t&): bool
+  + getDistanceRight(distance: uint8_t&): bool
+  + getDistanceFrontLeft(distance: uint8_t&): bool
+  + getDistanceFrontRight(distance: uint8_t&): bool
+
+  + isWallLeft(): SensorWallState
+  + isWallRight(): SensorWallState
+  + isWallFront(): SensorWallState
+  .. Wheel encoders (Pololu S13V10F5) ..
+  + getEncoderLeft(count: int32_t&): bool
+  + getEncoderRight(count: int32_t&): bool
+  .. Gyroscope (MPU6050) ..
+  + getGyroZRate(rate: float&): bool
+  + resetZRotation(): void
+  + getRotationAngle(angle: float&): bool
+  .. NFC reader (RFID-RC522) ..
+  + getNfcTagType(tagType: NfcTagType&): bool
+  .. Simulation ..
+  + printSimulatedMaze(): void
+}
+
+class SimulatedMaze{
+  .. Constants ..
+  - {static} SIM_WIDTH: int16_t = 4
+  - {static} SIM_HEIGHT: int16_t = 4
+  .. Maze structure ..
+  - cell_states_: CellState[SIM_HEIGHT][SIM_WIDTH]
+  - vertical_walls_: WallState[SIM_HEIGHT][SIM_WIDTH + 1]
+  - horizontal_walls_: WallState[SIM_HEIGHT + 1][SIM_WIDTH]
+  .. Rat position..
+  - global_rat_start_x_: int16_t
+  - global_rat_start_y_: int16_t
+  - rat_pos_: RatPosition
+  --
+  + SimulatedMaze(rat_pos: RatPosition&)
+  .. Cell state access ..
+  + getCellState(): CellState
+  .. Wall state access ..
+  + getWallLeft(): WallState
+  + getWallFront(): WallState
+  + getWallRight(): WallState
+  .. Simulation output ..
+  + printMaze(): void
+  .. Internal helpers ..
+  - getGlobalXIndex(): int16_t
+  - getGlobalYIndex(): int16_t
+  .. Maze configurations ..
+  - setMazeEmpty(): void
+  - setMazeBasic_1(): void
+  - setMazeBasic_2(): void
+  - setMazeComplex_1(): void
+  - setMazeComplex_2(): void
+}
+
+' Relationships
+SensorManager ..> SensorWallState: uses
+SensorManager ..> NfcTagType: uses
+SensorManager *-- SimulatedMaze: contains
+
+SimulatedMaze ..> CellState : uses
+SimulatedMaze ..> WallState : uses
+SimulatedMaze ..> SimMazeConfig : uses
+SimulatedMaze --> RatPosition : accesses
+
+
+@enduml

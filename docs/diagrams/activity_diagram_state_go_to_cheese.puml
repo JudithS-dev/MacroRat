@@ -1,0 +1,25 @@
+@startuml
+scale 0.7
+
+start
+
+:Sensoren lesen;
+:Karte prüfen;
+
+if (Karte stimmt?) then (ja)
+  if (am Käse?) then (ja)
+    :Setze Ziel auf Startposition;
+    :Wechsle zu STATE_RETURN_TO_START;
+    stop
+  else (nein)
+    :Berechne nächste Bewegung (fallenarm);
+    :Führe Bewegung aus;
+    stop
+  endif
+else (nein)
+
+  :Wechsle zu STATE_ERROR;
+  stop
+endif
+
+@enduml
