@@ -1,3 +1,23 @@
+> **Hinweis zum Umfang dieses Repositories**
+>
+> Dieses Repository enthält ausschließlich die **Embedded-Steuerungssoftware**, die auf dem
+> **ESP32** des MacroRat-Roboters ausgeführt wird. Sie umfasst:
+> - Sensorabfragen (Entfernungssensoren, Encoder, Gyroskop)
+> - Motorsteuerung und Bewegungslogik
+> - Labyrinthkarte und interne Zustandsspeicherung
+> - Navigations- und Pfadfindungsalgorithmen
+>
+> Für das ursprüngliche Projekt wurde zusätzlich ein **Raspberry Pi** als **Webserver** verwendet,
+> um eine grafische Benutzeroberfläche zur Statusanzeige und Kartendarstellung bereitzustellen.
+> Die Implementierung dieses Webinterfaces war **nicht Teil meines Aufgabenbereichs** und ist
+> daher **nicht in diesem Repository enthalten**.
+>
+> Ebenso gehören die Module `communication_interface` und `nfc_reader` **nicht zu meinem bearbeiteten Code**
+> und sind daher **weder als `.h`- noch `.cpp`-Dateien** im Repository enthalten.
+
+---
+
+
 > **Hinweis:** Wenn du Änderungen an der `README.md` vornehmen möchtest, führe bitte zuerst folgenden Befehl aus:
 >
 > ```bash
